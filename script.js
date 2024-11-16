@@ -6,7 +6,9 @@ function onDataViewSelect(dataView) {
     try {
         if (dataView === "Sent") {
             code = generateSentCode();
-        } else if (dataView === "Open") {
+        }else if (dataView === "Job") {
+            code = generateJobCode();
+        }  else if (dataView === "Open") {
             code = generateOpenCode();
         } else if (dataView === "Bounce") {
             code = generateBounceCode();
@@ -26,6 +28,10 @@ function onDataViewSelect(dataView) {
             code = generateNotSentCode();
         }else if (dataView === "ImportDefinition") {
             code = generateImportDefinitionCode();
+        }else if (dataView === "Journey") {
+            code = generateJourneyCode();
+        }else if (dataView === "JourneyActivity") {
+            code = generateJourneyActivityCode();
         }else {
             throw new Error("Invalid Data View selected");
         }
@@ -40,6 +46,162 @@ function onDataViewSelect(dataView) {
     }
 }
 
+function generateJourneyActivityCode(){
+    return `
+    <script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_JourneyActivity"; // Name of the Data Extension
+        var folderName = "Data View"; // The folder name is "Data View"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the Journey Activity Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration for the Journey Activity Data View
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                { "CustomerKey": "VersionID", "Name": "VersionID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityID", "Name": "ActivityID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityName", "Name": "ActivityName", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityExternalKey", "Name": "ActivityExternalKey", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JourneyActivityObjectID", "Name": "JourneyActivityObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityType", "Name": "ActivityType", "FieldType": "Text", "MaxLength": 512, "IsPrimaryKey": false, "IsRequired": true }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+    `; 
+}
+function generateJourneyCode(){
+    return `
+    <script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_Journey"; // Name of the Data Extension
+        var folderName = "Data View"; // The folder name is "Data View"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the Journey Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration for the Journey Data View
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                { "CustomerKey": "VersionID", "Name": "VersionID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "JourneyID", "Name": "JourneyID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "JourneyName", "Name": "JourneyName", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "VersionNumber", "Name": "VersionNumber", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "CreatedDate", "Name": "CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "LastPublishedDate", "Name": "LastPublishedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ModifiedDate", "Name": "ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JourneyStatus", "Name": "JourneyStatus", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": true }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+    `; 
+}
 function generateImportDefinitionCode(){
     return `
     <script runat="server">
@@ -225,7 +387,113 @@ function generateNotSentCode(){
 </script>
 `;
 }
+function generateJobCode() {
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
 
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_Job";
+        var folderName = "Data View"; // The folder name is now "Data View"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the Job Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                { "CustomerKey": "AccountID", "Name": "AccountID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AccountUserID", "Name": "AccountUserID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobID", "Name": "JobID", "FieldType": "Number", "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "EmailID", "Name": "EmailID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FromName", "Name": "FromName", "FieldType": "Text", "MaxLength": 130, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FromEmail", "Name": "FromEmail", "FieldType": "EmailAddress", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SchedTime", "Name": "SchedTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "PickupTime", "Name": "PickupTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DeliveredTime", "Name": "DeliveredTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TriggererSendDefinitionObjectID", "Name": "TriggererSendDefinitionObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TriggeredSendCustomerKey", "Name": "TriggeredSendCustomerKey", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EventID", "Name": "EventID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "IsMultipart", "Name": "IsMultipart", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobType", "Name": "JobType", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobStatus", "Name": "JobStatus", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ModifiedBy", "Name": "ModifiedBy", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ModifiedDate", "Name": "ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EmailName", "Name": "EmailName", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EmailSubject", "Name": "EmailSubject", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "IsWrapped", "Name": "IsWrapped", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TestEmailAddr", "Name": "TestEmailAddr", "FieldType": "EmailAddress", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "Category", "Name": "Category", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "BccEmail", "Name": "BccEmail", "FieldType": "EmailAddress", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OriginalSchedTime", "Name": "OriginalSchedTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "CreatedDate", "Name": "CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "CharacterSet", "Name": "CharacterSet", "FieldType": "Text", "MaxLength": 30, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "IPAddress", "Name": "IPAddress", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SalesForceTotalSubscriberCount", "Name": "SalesForceTotalSubscriberCount", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SalesForceErrorSubscriberCount", "Name": "SalesForceErrorSubscriberCount", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SendType", "Name": "SendType", "FieldType": "Text", "MaxLength": 128, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DynamicEmailSubject", "Name": "DynamicEmailSubject", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SuppressTracking", "Name": "SuppressTracking", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SendClassificationType", "Name": "SendClassificationType", "FieldType": "Text", "MaxLength": 32, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SendClassification", "Name": "SendClassification", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ResolveLinksWithCurrentData", "Name": "ResolveLinksWithCurrentData", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EmailSendDefinition", "Name": "EmailSendDefinition", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DeduplicateByEmail", "Name": "DeduplicateByEmail", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+`;
+}
 function generateSentCode() {
     return `
 < script runat="server" >
