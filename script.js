@@ -22,7 +22,11 @@ function onDataViewSelect(dataView) {
             code = generateListSubscribersCode();
         } else if (dataView === "BusinessUnitUnsubscribes") {
             code = generateBusinessUnitUnsubscribesCode();
-        } else {
+        } else if (dataView === "NotSent") {
+            code = generateNotSentCode();
+        }else if (dataView === "ImportDefinition") {
+            code = generateImportDefinitionCode();
+        }else {
             throw new Error("Invalid Data View selected");
         }
 
@@ -34,6 +38,192 @@ function onDataViewSelect(dataView) {
     } catch (ex) {
         showError(`Error loading code: ${ex.message}`);
     }
+}
+
+function generateImportDefinitionCode(){
+    return `
+    <script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "ImportDefinition";
+        var folderName = "Monitoring";
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                // Define fields for Data Extension
+                { "Name": "ObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": true, "IsRequired": true },
+                { "Name": "CustomerKey", "FieldType": "Text", "MaxLength": 36 },
+                { "Name": "Description", "FieldType": "Text", "MaxLength": 4000 },
+                { "Name": "Name", "FieldType": "Text", "MaxLength": 400 },
+                { "Name": "LocaleCode", "FieldType": "Text", "MaxLength": 10 },
+                { "Name": "UpdateType", "FieldType": "Text", "MaxLength": 50 },
+                { "Name": "SubscriberImportType", "FieldType": "Text", "MaxLength": 50 },
+                { "Name": "FileTransferLocationID", "FieldType": "Text", "MaxLength": 50 },
+                { "Name": "FileSpec", "FieldType": "Text", "MaxLength": 400 },
+                { "Name": "FieldMappingType", "FieldType": "Text", "MaxLength": 50 },
+                { "Name": "DestinationObjectID", "FieldType": "Text", "MaxLength": 50 },
+                { "Name": "AllowErrors", "FieldType": "Boolean" }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+
+</script>
+
+    `;
+}
+
+function generateNotSentCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+       var dataExtensionName = "NotSent_DataViews"; // Name of the Data Extension
+       var folderName = "Data Views"; // Folder name where the Data Extension will be created
+       
+       // Initialize the creation of the Data Extension
+       var result = createDataExtension(dataExtensionName, folderName);
+       var objectId = RetrieveDataExtension(dataExtensionName); // Retrieve the Object ID of the created Data Extension
+       
+       // Output the Object ID of the Data Extension to the screen
+       Write(objectId);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder based on its name
+    function RetrieveFolderID(folderName) {
+        // Define a filter to retrieve the folder by its name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        
+        // Retrieve folder based on the filter
+        var results = Folder.Retrieve(filter);
+        
+        // If the folder is found, return the ID
+        if (results && results.length > 0) {
+            return results[0].ID;
+        } else {
+            // If the folder isn't found, return null or handle appropriately
+            throw new Error("Folder not found: " + folderName);
+        }
+    }
+
+    // Function to create a Data Extension with the specified fields
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize the WSProxy API
+        var api = new Script.Util.WSProxy();
+        
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve the folder ID using the folder name
+        var folderID = RetrieveFolderID(folderName);
+
+        // Define the configuration for the Data Extension
+        var config = {
+            "CustomerKey": dataExtensionName, // Unique identifier for the Data Extension
+            "Name": dataExtensionName, // Name of the Data Extension
+            "CategoryID": folderID, // Folder ID for the Data Extension
+            "Fields": [
+                { "Name": "ClientID", "FieldType": "Number" },
+                { "Name": "SendID", "FieldType": "Number" },
+                { "Name": "ListID", "FieldType": "Number" },
+                { "Name": "BatchID", "FieldType": "Number" },
+                { "Name": "SubscriberID", "FieldType": "Number" },
+                { "Name": "SubscriberKey", "FieldType": "Text", "MaxLength": 254 },
+                { "Name": "EmailAddress", "FieldType": "Text", "MaxLength": 500 },
+                { "Name": "EventDate", "FieldType": "Date" },
+                { "Name": "EventType", "FieldType": "Text", "MaxLength": 128 },
+                { "Name": "TriggeredSendExternalKey", "FieldType": "Text", "MaxLength": 36 },
+                { "Name": "Reason", "FieldType": "Text", "MaxLength": 100 }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+
+    // Function to retrieve the ObjectID of a Data Extension using its CustomerKey (ExternalKey)
+    function RetrieveDataExtension(externalKey) {
+        // Initialize the WSProxy API
+        var api = new Script.Util.WSProxy();
+        
+        // Retrieve the Data Extension based on its CustomerKey (ExternalKey)
+        var req = api.retrieve("DataExtension", ["ObjectID"], {
+            Property: "CustomerKey",
+            SimpleOperator: "equals",
+            Value: externalKey
+        });
+        
+        // Return the ObjectID of the first Data Extension result
+        if (req && req.Results.length > 0) {
+            return req.Results[0].ObjectID;
+        } else {
+            throw new Error("Data Extension not found with CustomerKey: " + externalKey);
+        }
+    }
+</script>
+`;
 }
 
 function generateSentCode() {
