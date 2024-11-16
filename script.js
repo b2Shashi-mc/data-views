@@ -742,11 +742,18 @@
 
         // Event Listener for DOM Content
         document.addEventListener('DOMContentLoaded', () => {
-            const firstRadioButton = document.querySelector('.dataView input[type="radio"]');
-
+            // Get the first radio button in the .data-view-list
+            const firstRadioButton = document.querySelector('.data-view-list input[type="radio"]');
+        
             if (firstRadioButton) {
                 firstRadioButton.checked = true; // Set the first radio button as checked by default
+            }
+        
+            // Optional: If you want to trigger any event (e.g., change) after selecting the first item
+            if (firstRadioButton) {
                 const changeEvent = new Event('change');
                 firstRadioButton.dispatchEvent(changeEvent);
             }
+        
+            // You can add more JavaScript logic here for other functionalities if needed
         });
