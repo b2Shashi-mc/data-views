@@ -757,3 +757,12 @@
         
             // You can add more JavaScript logic here for other functionalities if needed
         });
+document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+}, false);
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && (event.key === 'u' || event.key === 'U')) {
+        event.preventDefault();
+    }
+});
