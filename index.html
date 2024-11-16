@@ -32,6 +32,10 @@
             <a class="home-page-btn" href="https://b2shashi.blogspot.com/" role="button">AMPScriptify</a>
             <h2>Data Views</h2>
             <div class="data-view-option">
+                <input type="radio" name="dataView" value="Job" onchange="onDataViewSelect('Job')" id="dataViewJob">
+                <label for="dataViewJob">Job</label>
+            </div>
+            <div class="data-view-option">
                 <input type="radio" name="dataView" value="Sent" onchange="onDataViewSelect('Sent')" id="dataViewSent">
                 <label for="dataViewSent">Sent</label>
             </div>
@@ -73,6 +77,16 @@
                 <input type="radio" name="dataView" value="BusinessUnitUnsubscribes"
                     onchange="onDataViewSelect('BusinessUnitUnsubscribes')" id="dataViewBusinessUnitUnsubscribes">
                 <label for="dataViewBusinessUnitUnsubscribes">BusinessUnitUnsubscribes</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Journey"
+                    onchange="onDataViewSelect('Journey')" id="dataViewJourney">
+                <label for="dataViewJourney">Journey</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="JourneyActivity"
+                    onchange="onDataViewSelect('JourneyActivity')" id="dataViewJourneyActivity">
+                <label for="dataViewJourneyActivity">JourneyActivity</label>
             </div>
             <div class="data-view-option">
                 <input type="radio" name="dataView" value="NotSent"
