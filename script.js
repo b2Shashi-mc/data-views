@@ -808,12 +808,20 @@ function showSuccess(message) {
 
 // Copy code to clipboard
 function copyCode() {
-    const code = document.getElementById('code-editor').innerText;
-    navigator.clipboard.writeText(code).then(() => {
-        showSuccess("Code copied to clipboard!");
-    }).catch(() => {
-        showError("Failed to copy code.");
-    });
+    const codeText = document.getElementById("code-editor").textContent;
+    navigator.clipboard.writeText(codeText)
+        .then(() => {
+            const modal = document.getElementById("copyModal");
+            
+            // Show the modal and then fade it out
+            modal.classList.add("show");
+
+            // After 3 seconds, fade out the modal
+            setTimeout(() => {
+                modal.classList.remove("show");
+            }, 2000); // 2 seconds to keep the modal visible before fading out
+        })
+        .catch(err => console.error("Error copying code: ", err));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
