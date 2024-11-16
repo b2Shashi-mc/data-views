@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="SMFC,sfmc, SOAP API,text/html; charset=UTF-8" http-equiv="Content-Type" name="sfmc">
+    <meta name="author" content="Sasee Prasad. SFMC Technical Architect, Author @AMPScriptify">
+    <title>Data Views</title>
+
+    <!-- Include Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <!-- Include Font Awesome for the clipboard icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="dataviews.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Left Section: Data View List -->
+        <div class="data-view-list">
+            <a class="home-page-btn" href="https://b2shashi.blogspot.com/" role="button">Home Page</a>
+            <h2>Data Views</h2>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Sent" onchange="onDataViewSelect('Sent')" id="dataViewSent">
+                <label for="dataViewSent">Sent</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Open" onchange="onDataViewSelect('Open')" id="dataViewOpen">
+                <label for="dataViewOpen">Open</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Click" onchange="onDataViewSelect('Click')"
+                    id="dataViewClick">
+                <label for="dataViewClick">Click</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Bounce" onchange="onDataViewSelect('Bounce')"
+                    id="dataViewBounce">
+                <label for="dataViewBounce">Bounce</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Complaint" onchange="onDataViewSelect('Complaint')"
+                    id="dataViewComplaint">
+                <label for="dataViewComplaint">Complaint</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Unsubscribe" onchange="onDataViewSelect('Unsubscribe')"
+                    id="dataViewUnsubscribe">
+                <label for="dataViewUnsubscribe">Unsubscribe</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="Subscribers" onchange="onDataViewSelect('Subscribers')"
+                    id="dataViewSubscribers">
+                <label for="dataViewSubscribers">Subscribers</label>
+            </div>
+            <div class="data-view-option">
+                <input type="radio" name="dataView" value="ListSubscribers"
+                    onchange="onDataViewSelect('ListSubscribers')" id="dataViewListSubscribers">
+                <label for="dataViewListSubscribers">ListSubscribers</label>
+            </div>
+        </div>
+
+        <!-- Right Section: Code Editor & Sample -->
+        <div class="code-editor-container">
+            <h2>Data View: <span id="selectedDataView">Select a Data View</span></h2>
+            <button class="copy-btn" onclick="copyCode()"><i class="fa fa-clipboard"></i> Copy Code</button>
+            <pre><code id="code-editor" class="language-javascript">Select a data view to see the sample code here.</code></pre>
+        </div>
+ 
+    <div id="copyModal" class="copy-modal">
+        <div class="modal-content">
+            Code copied to clipboard!
+        </div>
+    </div>
+    </div>
+
+    <!-- Link to external JS -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
