@@ -230,6 +230,25 @@
             0% {
                 opacity: 0;
             }
+        /* Home Button */
+.home-page-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.home-page-btn:hover,
+.home-page-btn:focus {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
 
             100% {
                 opacity: 1;
