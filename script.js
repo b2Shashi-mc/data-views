@@ -32,6 +32,32 @@ function onDataViewSelect(dataView) {
             code = generateJourneyCode();
         }else if (dataView === "JourneyActivity") {
             code = generateJourneyActivityCode();
+        }else if (dataView === "AutomationActivityInstance") {
+            code = generateAutomationActivityInstanceCode();
+        }else if (dataView === "AutomationInstance") {
+            code = generateAutomationInstanceCode();
+        }else if (dataView === "SMSMessageTracking") {
+            code = generateSMSMessageTrackingCode();
+        }else if (dataView === "SMSSubscriptionLog") {
+            code = generateSMSSubscriptionLogCode();
+        }else if (dataView === "UndeliverableSMS") {
+            code = generateUndeliverableSMSCode();
+        }else if (dataView === "MobileAddress") {
+            code = generateMobileAddressCode();
+        }else if (dataView === "MobileSubscription") {
+            code = generateMobileSubscriptionCode();
+        }else if (dataView === "ChatMessagingSubscription") {
+            code = generateChatMessagingSubscriptionCode();
+        }else if (dataView === "MobilePush") {
+            code = generateMobilePushCode();
+        }else if (dataView === "MobileOrphanContact") {
+            code = generateMobileOrphanContactCode();
+        }else if (dataView === "ImportDefinitionResults") {
+            code = generateImportDefinitionResultsCode();
+        }else if (dataView === "AuditTrailAcivityLog") {
+            code = generateAuditTrailAcivityLogCode();
+        }else if (dataView === "AuditTrailAccessLog") {
+            code = generateAuditTrailAccessLogCode();
         }else {
             throw new Error("Invalid Data View selected");
         }
@@ -44,6 +70,1081 @@ function onDataViewSelect(dataView) {
     } catch (ex) {
         showError(`Error loading code: ${ex.message}`);
     }
+}
+
+function generateAuditTrailAccessLogCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Audit_Trail_Access_Log";
+        var folderName = "Monitoring";
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                // Define fields for Data Extension
+                {"CustomerKey":"User","Name":"User","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"UserName","Name":"UserName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"AccessDate","Name":"AccessDate","FieldType":"Date","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"FromIP","Name":"FromIP","FieldType":"Text","MaxLength":15,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"SecurityEventTypeID","Name":"SecurityEventTypeID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"SecurityEventType","Name":"SecurityEventType","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"LoginStatusID","Name":"LoginStatusID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"LoginStatusName","Name":"LoginStatusName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"UserAgent","Name":"UserAgent","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"Event Source","Name":"Event Source","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"InsertedDate","Name":"InsertedDate","FieldType":"Date","IsPrimaryKey":false,"IsRequired":false,"DefaultValue":"getdate()"}
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+
+</script>
+
+    
+                        `;
+}
+
+function generateAuditTrailAcivityLogCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Audit_Trail_Log";
+        var folderName = "Monitoring";
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                // Define fields for Data Extension
+                { "CustomerKey":"CreatedDate","Name": "CreatedDate", "FieldType": "Date", "IsPrimaryKey":false,"IsRequired":false },
+                { "CustomerKey":"EnterpriseId","Name":"EID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                { "CustomerKey":"MemberId","Name":"MID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"UserID","Name":"UserID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"EmployeeID","Name":"EmployeeID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"EmployeeName","Name":"EmployeeName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"ObjectTypeID","Name":"ObjectTypeID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"ObjectTypeName","Name":"ObjectTypeName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"OperationID","Name":"OperationID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"OperationName","Name":"OperationName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"ObjectID","Name":"ObjectID","FieldType":"Text","MaxLength":36,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"ObjectName","Name":"ObjectName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"TransactionID","Name":"TransactionID","FieldType":"Text","MaxLength":36,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"InsertedDate","Name":"InsertedDate","FieldType":"Date","IsPrimaryKey":false,"IsRequired":false,"DefaultValue":"getdate()"}
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+
+</script>
+
+    
+                        `;
+}
+
+function generateImportDefinitionResultsCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "ImportDefinitionResults";  // Update name of Data Extension as needed
+        var folderName = "Monitoring"; // Folder name remains "Monitoring"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+
+        return folderID;
+    }
+
+    // Function to create a Data Extension
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                // Define fields for Data Extension (same as in your original template, updated)
+                { "CustomerKey": "ObjectID", "Name": "ObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "TaskResultID", "Name": "TaskResultID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ImportStatus", "Name": "ImportStatus", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ImportType", "Name": "ImportType", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TotalRows", "Name": "TotalRows", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "NumberErrors", "Name": "NumberErrors", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "NumberRestricted", "Name": "NumberRestricted", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "NumberDuplicated", "Name": "NumberDuplicated", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "NumberSuccessful", "Name": "NumberSuccessful", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DestinationID", "Name": "DestinationID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "StartDate", "Name": "StartDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EndDate", "Name": "EndDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ImportDefinitionCustomerKey", "Name": "ImportDefinitionCustomerKey", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FileSpec", "Name": "FileSpec", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+                        `;
+}
+
+function generateMobileOrphanContactCode(){
+    return `
+<script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "MobileOrphanContact";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for MobileOrphanContact Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "ContactID", "Name": "ContactID", "FieldType": "Number", "Precision": 18, "Scale": 0, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "ContactKey", "Name": "ContactKey", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AddressID", "Name": "AddressID", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "CreatedDate", "Name": "CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": true }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+    
+                        `;
+}
+
+function generateMobilePushCode(){
+    return `
+<script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_MobilePush";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the MobilePush Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "_DeviceID", "Name": "_DeviceID", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ContactID", "Name": "_ContactID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_APID", "Name": "_APID", "FieldType": "Text", "MaxLength": 38, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Status", "Name": "_Status", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Source", "Name": "_Source", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_SourceObjectId", "Name": "_SourceObjectId", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Platform", "Name": "_Platform", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_PlatformVersion", "Name": "_PlatformVersion", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Alias", "Name": "_Alias", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutStatusID", "Name": "_OptOutStatusID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutMethodID", "Name": "_OptOutMethodID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutDate", "Name": "_OptOutDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptInStatusID", "Name": "_OptInStatusID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptInMethodID", "Name": "_OptInMethodID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptInDate", "Name": "_OptInDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Channel", "Name": "_Channel", "FieldType": "Text", "MaxLength": 20, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedDate", "Name": "_CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedBy", "Name": "_CreatedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedDate", "Name": "_ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedBy", "Name": "_ModifiedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_City", "Name": "_City", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_State", "Name": "_State", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ZipCode", "Name": "_ZipCode", "FieldType": "Text", "MaxLength": 20, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_FirstName", "Name": "_FirstName", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_LastName", "Name": "_LastName", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_UTCOffset", "Name": "_UTCOffset", "FieldType": "Decimal", "Precision": 18, "Scale": 6, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_IsHonorDST", "Name": "_IsHonorDST", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_SystemToken", "Name": "_SystemToken", "FieldType": "Text", "MaxLength": 4000, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ProviderToken", "Name": "_ProviderToken", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Badge", "Name": "_Badge", "FieldType": "Number", "Precision": 18, "Scale": 0, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_LocationEnabled", "Name": "_LocationEnabled", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_TimeZone", "Name": "_TimeZone", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Device", "Name": "_Device", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_HardwareId", "Name": "_HardwareId", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_DeviceType", "Name": "_DeviceType", "FieldType": "Text", "MaxLength": 20, "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+                    `;
+}
+
+function generateChatMessagingSubscriptionCode(){
+    return `
+<script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_ChatMessagingSubscription";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the ChatMessagingSubscription Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "_MobileNumber", "Name": "_MobileNumber", "FieldType": "Text", "MaxLength": 254, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ChannelId", "Name": "_ChannelId", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ChannelType", "Name": "_ChannelType", "FieldType": "Text", "MaxLength": 20, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutStatusID", "Name": "_OptOutStatusID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutMethodID", "Name": "_OptOutMethodID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutDate", "Name": "_OptOutDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptinStatusID", "Name": "_OptinStatusID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptinMethodID", "Name": "_OptinMethodID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptinDate", "Name": "_OptinDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Source", "Name": "_Source", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_SourceObjectId", "Name": "_SourceObjectId", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedDate", "Name": "_CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedBy", "Name": "_CreatedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedDate", "Name": "_ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedBy", "Name": "_ModifiedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+                `;  
+}
+
+function generateMobileSubscriptionCode(){
+    return `
+<script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_MobileSubscription";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the MobileSubscription Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "_MobileNumber", "Name": "_MobileNumber", "FieldType": "Text", "MaxLength": 15, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_SubscriptionDefinitionID", "Name": "_SubscriptionDefinitionID", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutStatusID", "Name": "_OptOutStatusID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutMethodID", "Name": "_OptOutMethodID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptOutDate", "Name": "_OptOutDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptInStatusID", "Name": "_OptInStatusID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptInMethodID", "Name": "_OptInMethodID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_OptInDate", "Name": "_OptInDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Source", "Name": "_Source", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedDate", "Name": "_CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_SourceObjectId", "Name": "_SourceObjectId", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedBy", "Name": "_CreatedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedDate", "Name": "_ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedBy", "Name": "_ModifiedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+
+                `; 
+}
+
+function generateMobileAddressCode(){
+    return `
+    <script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_MobileAddress";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the MobileAddress Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "_MobileNumber", "Name": "_MobileNumber", "FieldType": "Text", "MaxLength": 15, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ContactID", "Name": "_ContactID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Status", "Name": "_Status", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Source", "Name": "_Source", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_SourceObjectId", "Name": "_SourceObjectId", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Priority", "Name": "_Priority", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_Channel", "Name": "_Channel", "FieldType": "Text", "MaxLength": 20, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CarrierID", "Name": "_CarrierID", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CountryCode", "Name": "_CountryCode", "FieldType": "Text", "MaxLength": 2, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedDate", "Name": "_CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_CreatedBy", "Name": "_CreatedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedDate", "Name": "_ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ModifiedBy", "Name": "_ModifiedBy", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_City", "Name": "_City", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_State", "Name": "_State", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_ZipCode", "Name": "_ZipCode", "FieldType": "Text", "MaxLength": 20, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_FirstName", "Name": "_FirstName", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_LastName", "Name": "_LastName", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_UTCOffset", "Name": "_UTCOffset", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "_IsHonorDST", "Name": "_IsHonorDST", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+                `; 
+}
+
+function generateUndeliverableSMSCode(){
+    return `
+<script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_UndeliverableSMS";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the UndeliverableSMS Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "MobileNumber", "Name": "MobileNumber", "FieldType": "Phone", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "Undeliverable", "Name": "Undeliverable", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "BounceCount", "Name": "BounceCount", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FirstBounceDate", "Name": "FirstBounceDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "HoldDate", "Name": "HoldDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+            `; 
+}
+
+function generateSMSSubscriptionLogCode(){
+    return `
+<script runat="server">
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_SMSSubscriptionLog";
+        var folderName = "Data View"; // Folder for Data Views
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        var folders = Folder.Retrieve(filter);
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the SMSSubscriptionLog Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        var api = new Script.Util.WSProxy();
+
+        // Retrieve folder ID
+        var folderID = RetrieveFolderID(folderName);
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID,
+            "Fields": [
+                { "CustomerKey": "MobileNumber", "Name": "MobileNumber", "FieldType": "Phone", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SubscriberKey", "Name": "SubscriberKey", "FieldType": "Text", "MaxLength": 255, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "LogDate", "Name": "LogDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "MobileSubscriptionID", "Name": "MobileSubscriptionID", "FieldType": "Number", "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "SubscriptionDefinitionID", "Name": "SubscriptionDefinitionID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OptOutStatusID", "Name": "OptOutStatusID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OptOutMethodID", "Name": "OptOutMethodID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OptOutDate", "Name": "OptOutDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OptInStatusID", "Name": "OptInStatusID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OptInMethodID", "Name": "OptInMethodID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OptInDate", "Name": "OptInDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "Source", "Name": "Source", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "CreatedDate", "Name": "CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ModifiedDate", "Name": "ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+            `; 
+}
+
+function generateSMSMessageTrackingCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_AutomationActivityInstance"; // Name of the Data Extension
+        var folderName = "Data View"; // The folder name is "Data View"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the Automation Activity Instance Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration for the Automation Activity Instance Data View
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                { "CustomerKey": "MemberID", "Name": "MemberID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationName", "Name": "AutomationName", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationCustomerKey", "Name": "AutomationCustomerKey", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationInstanceID", "Name": "AutomationInstanceID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "ActivityType", "Name": "ActivityType", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityName", "Name": "ActivityName", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityDescription", "Name": "ActivityDescription", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityCustomerKey", "Name": "ActivityCustomerKey", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceStep", "Name": "ActivityInstanceStep", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceID", "Name": "ActivityInstanceID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceStartTime_UTC", "Name": "ActivityInstanceStartTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityInstanceEndTime_UTC", "Name": "ActivityInstanceEndTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityInstanceStatus", "Name": "ActivityInstanceStatus", "FieldType": "Text", "MaxLength": 256, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceStatusDetails", "Name": "ActivityInstanceStatusDetails", "FieldType": "Text", "MaxLength": 4000, "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+        `; 
+}
+
+function generateAutomationActivityInstanceCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_AutomationActivityInstance"; // Name of the Data Extension
+        var folderName = "Data View"; // The folder name is "Data View"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the Automation Activity Instance Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration for the Automation Activity Instance Data View
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                { "CustomerKey": "MemberID", "Name": "MemberID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationName", "Name": "AutomationName", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationCustomerKey", "Name": "AutomationCustomerKey", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationInstanceID", "Name": "AutomationInstanceID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "ActivityType", "Name": "ActivityType", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityName", "Name": "ActivityName", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityDescription", "Name": "ActivityDescription", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityCustomerKey", "Name": "ActivityCustomerKey", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceStep", "Name": "ActivityInstanceStep", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceID", "Name": "ActivityInstanceID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceStartTime_UTC", "Name": "ActivityInstanceStartTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityInstanceEndTime_UTC", "Name": "ActivityInstanceEndTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ActivityInstanceStatus", "Name": "ActivityInstanceStatus", "FieldType": "Text", "MaxLength": 256, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "ActivityInstanceStatusDetails", "Name": "ActivityInstanceStatusDetails", "FieldType": "Text", "MaxLength": 4000, "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+    `; 
+}
+
+function generateAutomationInstanceCode(){
+    return `
+<script runat="server">
+    // Load necessary libraries
+    Platform.Load("core", "1");
+
+    try {
+        // Define Data Extension and folder names
+        var dataExtensionName = "Dataview_AutomationInstance"; // Name of the Data Extension
+        var folderName = "Data View"; // The folder name is "Data View"
+
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName);
+        
+        // Write result to console
+        Write(result);
+    } catch (ex) {
+        // Catch and log any errors that occur
+        Write(Stringify(ex));
+    }
+
+    // Function to retrieve the ID of a folder by name
+    function RetrieveFolderID(folderName) {
+        var folderID = null;
+        // Define filter to retrieve folder by name
+        var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+        };
+        // Retrieve folder based on filter
+        var folders = Folder.Retrieve(filter);
+        // If folder is found, set folderID
+        if (folders && folders.length > 0) {
+            folderID = folders[0].ID;
+        }
+        return folderID;
+    }
+
+    // Function to create a Data Extension for the Automation Instance Data View
+    function createDataExtension(dataExtensionName, folderName) {
+        // Initialize WSProxy API
+        var api = new Script.Util.WSProxy();
+
+        // Set the client ID for API request
+        api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+        // Retrieve folder ID using provided folderName
+        var folderID = RetrieveFolderID(folderName);
+        // If folder not found, throw error
+        if (!folderID) {
+            throw new Error("Folder not found: " + folderName);
+        }
+
+        // Define Data Extension configuration for the Automation Instance Data View
+        var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, // Assign folderID to Data Extension
+            "Fields": [
+                { "CustomerKey": "MemberID", "Name": "MemberID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationName", "Name": "AutomationName", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationCustomerKey", "Name": "AutomationCustomerKey", "FieldType": "Text", "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "AutomationDescription", "Name": "AutomationDescription", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationType", "Name": "AutomationType", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationNotificationRecipient_Complete", "Name": "AutomationNotificationRecipient_Complete", "FieldType": "Text", "MaxLength": 500, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationNotificationRecipient_Error", "Name": "AutomationNotificationRecipient_Error", "FieldType": "Text", "MaxLength": 500, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationNotificationRecipient_Skip", "Name": "AutomationNotificationRecipient_Skip", "FieldType": "Text", "MaxLength": 500, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationStepCount", "Name": "AutomationStepCount", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationInstanceID", "Name": "AutomationInstanceID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "AutomationInstanceIsRunOnce", "Name": "AutomationInstanceIsRunOnce", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FilenameFromTrigger", "Name": "FilenameFromTrigger", "FieldType": "Text", "MaxLength": 4000, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationInstanceScheduledTime_UTC", "Name": "AutomationInstanceScheduledTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationInstanceStartTime_UTC", "Name": "AutomationInstanceStartTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationInstanceEndTime_UTC", "Name": "AutomationInstanceEndTime_UTC", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AutomationInstanceStatus", "Name": "AutomationInstanceStatus", "FieldType": "Text", "MaxLength": 400, "IsPrimaryKey": false, "IsRequired": true },
+                { "CustomerKey": "AutomationInstanceActivityErrorDetails", "Name": "AutomationInstanceActivityErrorDetails", "FieldType": "Text", "MaxLength": 4000, "IsPrimaryKey": false, "IsRequired": false }
+            ]
+        };
+
+        // Create the Data Extension using WSProxy API and return the result
+        var result = api.createItem("DataExtension", config);
+        return Stringify(result);
+    }
+</script>
+
+    `; 
+    
 }
 
 function generateJourneyActivityCode(){
@@ -204,17 +1305,18 @@ function generateJourneyCode(){
 }
 function generateImportDefinitionCode(){
     return `
-    <script runat="server">
+   <script runat="server">
     // Load necessary libraries
     Platform.Load("core", "1");
 
     try {
         // Define Data Extension and folder names
-        var dataExtensionName = "ImportDefinition";
-        var folderName = "Monitoring";
+        var dataExtensionName = "ImportDefinition";  // Change the name of the Data Extension as needed
+        var folderName = "Monitoring"; // The folder name is now "Monitoring"
 
         // Create Data Extension and retrieve result
         var result = createDataExtension(dataExtensionName, folderName);
+
         // Write result to console
         Write(result);
     } catch (ex) {
@@ -231,12 +1333,15 @@ function generateImportDefinitionCode(){
             SimpleOperator: "equals",
             Value: folderName
         };
+
         // Retrieve folder based on filter
         var folders = Folder.Retrieve(filter);
+
         // If folder is found, set folderID
         if (folders && folders.length > 0) {
             folderID = folders[0].ID;
         }
+
         return folderID;
     }
 
@@ -250,6 +1355,7 @@ function generateImportDefinitionCode(){
 
         // Retrieve folder ID using provided folderName
         var folderID = RetrieveFolderID(folderName);
+
         // If folder not found, throw error
         if (!folderID) {
             throw new Error("Folder not found: " + folderName);
@@ -262,18 +1368,43 @@ function generateImportDefinitionCode(){
             "CategoryID": folderID, // Assign folderID to Data Extension
             "Fields": [
                 // Define fields for Data Extension
-                { "Name": "ObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": true, "IsRequired": true },
-                { "Name": "CustomerKey", "FieldType": "Text", "MaxLength": 36 },
-                { "Name": "Description", "FieldType": "Text", "MaxLength": 4000 },
-                { "Name": "Name", "FieldType": "Text", "MaxLength": 400 },
-                { "Name": "LocaleCode", "FieldType": "Text", "MaxLength": 10 },
-                { "Name": "UpdateType", "FieldType": "Text", "MaxLength": 50 },
-                { "Name": "SubscriberImportType", "FieldType": "Text", "MaxLength": 50 },
-                { "Name": "FileTransferLocationID", "FieldType": "Text", "MaxLength": 50 },
-                { "Name": "FileSpec", "FieldType": "Text", "MaxLength": 400 },
-                { "Name": "FieldMappingType", "FieldType": "Text", "MaxLength": 50 },
-                { "Name": "DestinationObjectID", "FieldType": "Text", "MaxLength": 50 },
-                { "Name": "AllowErrors", "FieldType": "Boolean" }
+                { "CustomerKey": "AccountID", "Name": "AccountID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "AccountUserID", "Name": "AccountUserID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobID", "Name": "JobID", "FieldType": "Number", "IsPrimaryKey": true, "IsRequired": true },
+                { "CustomerKey": "EmailID", "Name": "EmailID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FromName", "Name": "FromName", "FieldType": "Text", "MaxLength": 130, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "FromEmail", "Name": "FromEmail", "FieldType": "EmailAddress", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SchedTime", "Name": "SchedTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "PickupTime", "Name": "PickupTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DeliveredTime", "Name": "DeliveredTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TriggererSendDefinitionObjectID", "Name": "TriggererSendDefinitionObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TriggeredSendCustomerKey", "Name": "TriggeredSendCustomerKey", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EventID", "Name": "EventID", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "IsMultipart", "Name": "IsMultipart", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobType", "Name": "JobType", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobStatus", "Name": "JobStatus", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ModifiedBy", "Name": "ModifiedBy", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ModifiedDate", "Name": "ModifiedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EmailName", "Name": "EmailName", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EmailSubject", "Name": "EmailSubject", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "IsWrapped", "Name": "IsWrapped", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TestEmailAddr", "Name": "TestEmailAddr", "FieldType": "EmailAddress", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "Category", "Name": "Category", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "BccEmail", "Name": "BccEmail", "FieldType": "EmailAddress", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OriginalSchedTime", "Name": "OriginalSchedTime", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "CreatedDate", "Name": "CreatedDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "CharacterSet", "Name": "CharacterSet", "FieldType": "Text", "MaxLength": 30, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "IPAddress", "Name": "IPAddress", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SalesForceTotalSubscriberCount", "Name": "SalesForceTotalSubscriberCount", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SalesForceErrorSubscriberCount", "Name": "SalesForceErrorSubscriberCount", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SendType", "Name": "SendType", "FieldType": "Text", "MaxLength": 128, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DynamicEmailSubject", "Name": "DynamicEmailSubject", "FieldType": "Text", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SuppressTracking", "Name": "SuppressTracking", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SendClassificationType", "Name": "SendClassificationType", "FieldType": "Text", "MaxLength": 32, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SendClassification", "Name": "SendClassification", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ResolveLinksWithCurrentData", "Name": "ResolveLinksWithCurrentData", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EmailSendDefinition", "Name": "EmailSendDefinition", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "DeduplicateByEmail", "Name": "DeduplicateByEmail", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false }
             ]
         };
 
@@ -281,7 +1412,6 @@ function generateImportDefinitionCode(){
         var result = api.createItem("DataExtension", config);
         return Stringify(result);
     }
-
 </script>
 
     `;
@@ -294,15 +1424,15 @@ function generateNotSentCode(){
     Platform.Load("core", "1");
 
     try {
-       var dataExtensionName = "NotSent_DataViews"; // Name of the Data Extension
-       var folderName = "Data Views"; // Folder name where the Data Extension will be created
-       
-       // Initialize the creation of the Data Extension
-       var result = createDataExtension(dataExtensionName, folderName);
-       var objectId = RetrieveDataExtension(dataExtensionName); // Retrieve the Object ID of the created Data Extension
-       
-       // Output the Object ID of the Data Extension to the screen
-       Write(objectId);
+        var dataExtensionName = "NotSent_DataViews"; // Name of the Data Extension
+        var folderName = "Data Views"; // Folder name where the Data Extension will be created
+        
+        // Initialize the creation of the Data Extension
+        var result = createDataExtension(dataExtensionName, folderName);
+        var objectId = RetrieveDataExtension(dataExtensionName); // Retrieve the Object ID of the created Data Extension
+        
+        // Output the Object ID of the Data Extension to the screen
+        Write(objectId);
     } catch (ex) {
         // Catch and log any errors that occur
         Write(Stringify(ex));
@@ -346,17 +1476,17 @@ function generateNotSentCode(){
             "Name": dataExtensionName, // Name of the Data Extension
             "CategoryID": folderID, // Folder ID for the Data Extension
             "Fields": [
-                { "Name": "ClientID", "FieldType": "Number" },
-                { "Name": "SendID", "FieldType": "Number" },
-                { "Name": "ListID", "FieldType": "Number" },
-                { "Name": "BatchID", "FieldType": "Number" },
-                { "Name": "SubscriberID", "FieldType": "Number" },
-                { "Name": "SubscriberKey", "FieldType": "Text", "MaxLength": 254 },
-                { "Name": "EmailAddress", "FieldType": "Text", "MaxLength": 500 },
-                { "Name": "EventDate", "FieldType": "Date" },
-                { "Name": "EventType", "FieldType": "Text", "MaxLength": 128 },
-                { "Name": "TriggeredSendExternalKey", "FieldType": "Text", "MaxLength": 36 },
-                { "Name": "Reason", "FieldType": "Text", "MaxLength": 100 }
+                { "CustomerKey": "ClientID", "Name": "ClientID", "FieldType": "Number" },
+                { "CustomerKey": "SendID", "Name": "SendID", "FieldType": "Number" },
+                { "CustomerKey": "ListID", "Name": "ListID", "FieldType": "Number" },
+                { "CustomerKey": "BatchID", "Name": "BatchID", "FieldType": "Number" },
+                { "CustomerKey": "SubscriberID", "Name": "SubscriberID", "FieldType": "Number" },
+                { "CustomerKey": "SubscriberKey", "Name": "SubscriberKey", "FieldType": "Text", "MaxLength": 254 },
+                { "CustomerKey": "EmailAddress", "Name": "EmailAddress", "FieldType": "Text", "MaxLength": 500 },
+                { "CustomerKey": "EventDate", "Name": "EventDate", "FieldType": "Date" },
+                { "CustomerKey": "EventType", "Name": "EventType", "FieldType": "Text", "MaxLength": 128 },
+                { "CustomerKey": "TriggeredSendExternalKey", "Name": "TriggeredSendExternalKey", "FieldType": "Text", "MaxLength": 36 },
+                { "CustomerKey": "Reason", "Name": "Reason", "FieldType": "Text", "MaxLength": 100 }
             ]
         };
 
@@ -385,6 +1515,7 @@ function generateNotSentCode(){
         }
     }
 </script>
+
 `;
 }
 function generateJobCode() {
@@ -496,7 +1627,7 @@ function generateJobCode() {
 }
 function generateSentCode() {
     return `
-< script runat="server" >
+<script runat="server">
     // Load necessary libraries
     Platform.Load("core", "1");
 
@@ -553,17 +1684,17 @@ function generateSentCode() {
             "Name": dataExtensionName,
             "CategoryID": folderID, // Assign folderID to Data Extension
             "Fields": [
-                { "CustomerKey":"AccountID", "Name": "AccountID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"OYBAccountID", "Name": "OYBAccountID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"JobID", "Name": "JobID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"ListID", "Name": "ListID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"BatchID", "Name": "BatchID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"SubscriberID", "Name": "SubscriberID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"SubscriberKey", "Name": "SubscriberKey", "FieldType": "Text", "MaxLength": 254, "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"EventDate", "Name": "EventDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"Domain", "Name": "Domain", "FieldType": "Text", "MaxLength": 128, "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"TriggererSendDefinitionObjectID", "Name": "TriggererSendDefinitionObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey":"TriggeredSendCustomerKey", "Name": "TriggeredSendCustomerKey", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false }
+                { "CustomerKey": "AccountID", "Name": "AccountID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "OYBAccountID", "Name": "OYBAccountID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "JobID", "Name": "JobID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "ListID", "Name": "ListID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "BatchID", "Name": "BatchID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SubscriberID", "Name": "SubscriberID", "FieldType": "Number", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "SubscriberKey", "Name": "SubscriberKey", "FieldType": "Text", "MaxLength": 254, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "EventDate", "Name": "EventDate", "FieldType": "Date", "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "Domain", "Name": "Domain", "FieldType": "Text", "MaxLength": 128, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TriggererSendDefinitionObjectID", "Name": "TriggererSendDefinitionObjectID", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "TriggeredSendCustomerKey", "Name": "TriggeredSendCustomerKey", "FieldType": "Text", "MaxLength": 36, "IsPrimaryKey": false, "IsRequired": false }
             ]
         };
 
@@ -571,7 +1702,8 @@ function generateSentCode() {
         var result = api.createItem("DataExtension", config);
         return Stringify(result);
     }
-</ script >`;
+</script>
+`;
 }
 function generateBusinessUnitUnsubscribesCode() {
     return `
