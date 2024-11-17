@@ -58,6 +58,14 @@ function onDataViewSelect(dataView) {
             code = generateAuditTrailAcivityLogCode();
         }else if (dataView === "AuditTrailAccessLog") {
             code = generateAuditTrailAccessLogCode();
+        }else if (dataView === "Account") {
+            code = generateAccountCode();
+        }else if (dataView === "AccountUser") {
+            code = generateAccountUserCode();
+        }else if (dataView === "BusinessUnit") {
+            code = generateBusinessUnitCode();
+        }else if (dataView === "GlobalUnsubscribeCategory") {
+            code = generateGlobalUnsubscribeCategoryCode();
         }else {
             throw new Error("Invalid Data View selected");
         }
@@ -70,6 +78,674 @@ function onDataViewSelect(dataView) {
     } catch (ex) {
         showError(`Error loading code: ${ex.message}`);
     }
+}
+
+function generateGlobalUnsubscribeCategoryCode(){
+    return `
+    <script runat="server">
+      Platform.Load("core", "1");
+    
+      try {
+        // Set the name of the SOAP object to "GlobalUnsubscribeCategory".
+        var soapObject = "GlobalUnsubscribeCategory";
+        // Define Data Extension and folder names
+        var dataExtensionName = soapObject;
+        var folderName = "APIObjects"; // Folder name
+    
+        // Describe the SOAP object and retrieve metadata
+        var describeResponse = DescribeSoapObject(soapObject);
+    
+        // Extract the properties array from the describeResponse
+        var properties = describeResponse.Results[0].Properties;
+    
+        // Fetch the retrieveable properties
+        var cols = FetchRetrieveableProperties(properties);
+    
+        // Define fields for the Data Extension
+        var fields = DefineFieldsForDataExtension(cols);
+    
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName, fields);
+    
+        // Output result to console
+        Write(result);
+      }
+      catch (ex) {
+        // Enhanced error handling with more details
+        Write("Error: " + ex.message);
+        Write("Error Description: " + ex.description );
+        Write("Stack Trace: " + ex.stack );
+    }
+    
+      // Function to describe SOAP object and retrieve metadata
+      function DescribeSoapObject(soapObjectname) {
+        try {
+          var api = new Script.Util.WSProxy();
+          var response = api.describe(soapObjectname);
+          if (response && response.Results && response.Results.length > 0) {
+            return response;
+          } else {
+            throw new Error("No metadata found for object: " + soapObjectname);
+          }
+        } catch (ex) {
+          throw new Error("DescribeSOAPObject failed: " + ex.message);
+        }
+      }
+    
+      // Function to fetch retrievable properties from SOAP metadata
+      function FetchRetrieveableProperties(soapMetaData) {
+        var propertiesName = [];
+    
+        for (var i in soapMetaData) {
+          var name = soapMetaData[i].Name;
+          var dataType = soapMetaData[i].DataType;
+          var isRetrievable = soapMetaData[i].IsRetrievable;
+    
+          if (isRetrievable === true) {
+            propertiesName.push({ Name: name, DataType: dataType });
+          }
+        }
+    
+        return propertiesName;
+      }
+    
+      // Function to retrieve Folder ID by name
+      function RetrieveFolderID(folderName) {
+        try {
+          var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+          };
+    
+          var folders = Folder.Retrieve(filter);
+    
+          if (folders && folders.length > 0) {
+            return folders[0].ID;
+          } else {
+            throw new Error("Folder not found: " + folderName);
+          }
+        } catch (ex) {
+          throw new Error("RetrieveFolderID failed: " + ex.message);
+        }
+      }
+    
+      // Function to create a Data Extension with given fields
+      function createDataExtension(dataExtensionName, folderName, fields) {
+        try {
+          var api = new Script.Util.WSProxy();
+          api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+    
+          var folderID = RetrieveFolderID(folderName);
+    
+          var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, 
+            "Fields": fields
+          };
+    
+          var result = api.createItem("DataExtension", config);
+          return Stringify(result);
+        } catch (ex) {
+          throw new Error("createDataExtension failed: " + ex.message);
+        }
+      }
+    
+      // Function to define fields for the Data Extension based on the retrieveable properties
+      // Function to define fields for the Data Extension based on the retrieveable properties
+        // Function to define fields for the Data Extension based on the retrieveable properties
+        function DefineFieldsForDataExtension(cols) {
+        var fields = [];
+    
+        for (var i = 0; i < cols.length; i++) {
+            var col = cols[i];
+    
+            // Check if the field name contains a period (.)
+            if (col.Name.indexOf('.') === -1) {
+            // If no period in the name, define the field
+            var row = {
+                "CustomerKey": col.Name,
+                "Name": col.Name,
+                "FieldType": "Text",
+                "MaxLength": 200,
+                "IsPrimaryKey": false,
+                "IsRequired": false
+            };
+    
+            fields.push(row);
+            } else {
+            // Optionally log the ignored field
+            //Write("Ignoring field with period in name: " + col.Name + "\n");
+            }
+        }
+    
+        return fields;
+        }
+    
+    
+    
+      // Function to determine field type based on the DataType
+      function GetFieldType(dataType) {
+        switch (dataType) {
+          case "String":
+            return "Text";
+          case "Int32":  
+            return "Number";
+          case "Boolean":
+            return "Boolean";
+          case "Decimal":
+          case "Double":
+            return "Decimal";
+          case "Date":
+            return "Date";
+          default:
+            return "Text"; // Default to Text if the type is unknown
+        }
+      }
+    </script>
+                                `;
+}
+
+function generateBusinessUnitCode(){
+    return `
+    <script runat="server">
+      Platform.Load("core", "1");
+    
+      try {
+        // Set the name of the SOAP object to "BusinessUnit".
+        var soapObject = "BusinessUnit";
+        // Define Data Extension and folder names
+        var dataExtensionName = soapObject;
+        var folderName = "APIObjects"; // Folder name
+    
+        // Describe the SOAP object and retrieve metadata
+        var describeResponse = DescribeSoapObject(soapObject);
+    
+        // Extract the properties array from the describeResponse
+        var properties = describeResponse.Results[0].Properties;
+    
+        // Fetch the retrieveable properties
+        var cols = FetchRetrieveableProperties(properties);
+    
+        // Define fields for the Data Extension
+        var fields = DefineFieldsForDataExtension(cols);
+    
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName, fields);
+    
+        // Output result to console
+        Write(result);
+      }
+      catch (ex) {
+        // Enhanced error handling with more details
+        Write("Error: " + ex.message);
+        Write("Error Description: " + ex.description );
+        Write("Stack Trace: " + ex.stack );
+    }
+    
+      // Function to describe SOAP object and retrieve metadata
+      function DescribeSoapObject(soapObjectname) {
+        try {
+          var api = new Script.Util.WSProxy();
+          var response = api.describe(soapObjectname);
+          if (response && response.Results && response.Results.length > 0) {
+            return response;
+          } else {
+            throw new Error("No metadata found for object: " + soapObjectname);
+          }
+        } catch (ex) {
+          throw new Error("DescribeSOAPObject failed: " + ex.message);
+        }
+      }
+    
+      // Function to fetch retrievable properties from SOAP metadata
+      function FetchRetrieveableProperties(soapMetaData) {
+        var propertiesName = [];
+    
+        for (var i in soapMetaData) {
+          var name = soapMetaData[i].Name;
+          var dataType = soapMetaData[i].DataType;
+          var isRetrievable = soapMetaData[i].IsRetrievable;
+    
+          if (isRetrievable === true) {
+            propertiesName.push({ Name: name, DataType: dataType });
+          }
+        }
+    
+        return propertiesName;
+      }
+    
+      // Function to retrieve Folder ID by name
+      function RetrieveFolderID(folderName) {
+        try {
+          var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+          };
+    
+          var folders = Folder.Retrieve(filter);
+    
+          if (folders && folders.length > 0) {
+            return folders[0].ID;
+          } else {
+            throw new Error("Folder not found: " + folderName);
+          }
+        } catch (ex) {
+          throw new Error("RetrieveFolderID failed: " + ex.message);
+        }
+      }
+    
+      // Function to create a Data Extension with given fields
+      function createDataExtension(dataExtensionName, folderName, fields) {
+        try {
+          var api = new Script.Util.WSProxy();
+          api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+    
+          var folderID = RetrieveFolderID(folderName);
+    
+          var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, 
+            "Fields": fields
+          };
+    
+          var result = api.createItem("DataExtension", config);
+          return Stringify(result);
+        } catch (ex) {
+          throw new Error("createDataExtension failed: " + ex.message);
+        }
+      }
+    
+      // Function to define fields for the Data Extension based on the retrieveable properties
+      // Function to define fields for the Data Extension based on the retrieveable properties
+        // Function to define fields for the Data Extension based on the retrieveable properties
+        function DefineFieldsForDataExtension(cols) {
+        var fields = [];
+    
+        for (var i = 0; i < cols.length; i++) {
+            var col = cols[i];
+    
+            // Check if the field name contains a period (.)
+            if (col.Name.indexOf('.') === -1) {
+            // If no period in the name, define the field
+            var row = {
+                "CustomerKey": col.Name,
+                "Name": col.Name,
+                "FieldType": "Text",
+                "MaxLength": 200,
+                "IsPrimaryKey": false,
+                "IsRequired": false
+            };
+    
+            fields.push(row);
+            } else {
+            // Optionally log the ignored field
+            //Write("Ignoring field with period in name: " + col.Name + "\n");
+            }
+        }
+    
+        return fields;
+        }
+    
+    
+    
+      // Function to determine field type based on the DataType
+      function GetFieldType(dataType) {
+        switch (dataType) {
+          case "String":
+            return "Text";
+          case "Int32":  
+            return "Number";
+          case "Boolean":
+            return "Boolean";
+          case "Decimal":
+          case "Double":
+            return "Decimal";
+          case "Date":
+            return "Date";
+          default:
+            return "Text"; // Default to Text if the type is unknown
+        }
+      }
+    </script>
+                                `;
+}
+
+function generateAccountUserCode(){
+    return `
+    <script runat="server">
+      Platform.Load("core", "1");
+    
+      try {
+        // Set the name of the SOAP object to "AccountUser".
+        var soapObject = "AccountUser";
+        // Define Data Extension and folder names
+        var dataExtensionName = soapObject;
+        var folderName = "APIObjects"; // Folder name
+    
+        // Describe the SOAP object and retrieve metadata
+        var describeResponse = DescribeSoapObject(soapObject);
+    
+        // Extract the properties array from the describeResponse
+        var properties = describeResponse.Results[0].Properties;
+    
+        // Fetch the retrieveable properties
+        var cols = FetchRetrieveableProperties(properties);
+    
+        // Define fields for the Data Extension
+        var fields = DefineFieldsForDataExtension(cols);
+    
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName, fields);
+    
+        // Output result to console
+        Write(result);
+      }
+      catch (ex) {
+        // Enhanced error handling with more details
+        Write("Error: " + ex.message);
+        Write("Error Description: " + ex.description );
+        Write("Stack Trace: " + ex.stack );
+    }
+    
+      // Function to describe SOAP object and retrieve metadata
+      function DescribeSoapObject(soapObjectname) {
+        try {
+          var api = new Script.Util.WSProxy();
+          var response = api.describe(soapObjectname);
+          if (response && response.Results && response.Results.length > 0) {
+            return response;
+          } else {
+            throw new Error("No metadata found for object: " + soapObjectname);
+          }
+        } catch (ex) {
+          throw new Error("DescribeSOAPObject failed: " + ex.message);
+        }
+      }
+    
+      // Function to fetch retrievable properties from SOAP metadata
+      function FetchRetrieveableProperties(soapMetaData) {
+        var propertiesName = [];
+    
+        for (var i in soapMetaData) {
+          var name = soapMetaData[i].Name;
+          var dataType = soapMetaData[i].DataType;
+          var isRetrievable = soapMetaData[i].IsRetrievable;
+    
+          if (isRetrievable === true) {
+            propertiesName.push({ Name: name, DataType: dataType });
+          }
+        }
+    
+        return propertiesName;
+      }
+    
+      // Function to retrieve Folder ID by name
+      function RetrieveFolderID(folderName) {
+        try {
+          var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+          };
+    
+          var folders = Folder.Retrieve(filter);
+    
+          if (folders && folders.length > 0) {
+            return folders[0].ID;
+          } else {
+            throw new Error("Folder not found: " + folderName);
+          }
+        } catch (ex) {
+          throw new Error("RetrieveFolderID failed: " + ex.message);
+        }
+      }
+    
+      // Function to create a Data Extension with given fields
+      function createDataExtension(dataExtensionName, folderName, fields) {
+        try {
+          var api = new Script.Util.WSProxy();
+          api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+    
+          var folderID = RetrieveFolderID(folderName);
+    
+          var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, 
+            "Fields": fields
+          };
+    
+          var result = api.createItem("DataExtension", config);
+          return Stringify(result);
+        } catch (ex) {
+          throw new Error("createDataExtension failed: " + ex.message);
+        }
+      }
+    
+      // Function to define fields for the Data Extension based on the retrieveable properties
+      // Function to define fields for the Data Extension based on the retrieveable properties
+        // Function to define fields for the Data Extension based on the retrieveable properties
+        function DefineFieldsForDataExtension(cols) {
+        var fields = [];
+    
+        for (var i = 0; i < cols.length; i++) {
+            var col = cols[i];
+    
+            // Check if the field name contains a period (.)
+            if (col.Name.indexOf('.') === -1) {
+            // If no period in the name, define the field
+            var row = {
+                "CustomerKey": col.Name,
+                "Name": col.Name,
+                "FieldType": "Text",
+                "MaxLength": 200,
+                "IsPrimaryKey": false,
+                "IsRequired": false
+            };
+    
+            fields.push(row);
+            } else {
+            // Optionally log the ignored field
+            //Write("Ignoring field with period in name: " + col.Name + "\n");
+            }
+        }
+    
+        return fields;
+        }
+    
+    
+    
+      // Function to determine field type based on the DataType
+      function GetFieldType(dataType) {
+        switch (dataType) {
+          case "String":
+            return "Text";
+          case "Int32":  
+            return "Number";
+          case "Boolean":
+            return "Boolean";
+          case "Decimal":
+          case "Double":
+            return "Decimal";
+          case "Date":
+            return "Date";
+          default:
+            return "Text"; // Default to Text if the type is unknown
+        }
+      }
+    </script>
+                                `;
+}
+
+function generateAccountCode(){
+    return `
+<script runat="server">
+  Platform.Load("core", "1");
+
+  try {
+    // Set the name of the SOAP object to "Account".
+    var soapObject = "Account";
+    // Define Data Extension and folder names
+    var dataExtensionName = soapObject;
+    var folderName = "APIObjects"; // Folder name
+
+    // Describe the SOAP object and retrieve metadata
+    var describeResponse = DescribeSoapObject(soapObject);
+
+    // Extract the properties array from the describeResponse
+    var properties = describeResponse.Results[0].Properties;
+
+    // Fetch the retrieveable properties
+    var cols = FetchRetrieveableProperties(properties);
+
+    // Define fields for the Data Extension
+    var fields = DefineFieldsForDataExtension(cols);
+
+    // Create Data Extension and retrieve result
+    var result = createDataExtension(dataExtensionName, folderName, fields);
+
+    // Output result to console
+    Write(result);
+  }
+  catch (ex) {
+    // Enhanced error handling with more details
+    Write("Error: " + ex.message);
+    Write("Error Description: " + ex.description );
+    Write("Stack Trace: " + ex.stack );
+  }
+
+  // Function to describe SOAP object and retrieve metadata
+  function DescribeSoapObject(soapObjectname) {
+    try {
+      var api = new Script.Util.WSProxy();
+      var response = api.describe(soapObjectname);
+      if (response && response.Results && response.Results.length > 0) {
+        return response;
+      } else {
+        throw new Error("No metadata found for object: " + soapObjectname);
+      }
+    } catch (ex) {
+      throw new Error("DescribeSOAPObject failed: " + ex.message);
+    }
+  }
+
+  // Function to fetch retrievable properties from SOAP metadata
+  function FetchRetrieveableProperties(soapMetaData) {
+    var propertiesName = [];
+
+    for (var i in soapMetaData) {
+      var name = soapMetaData[i].Name;
+      var dataType = soapMetaData[i].DataType;
+      var isRetrievable = soapMetaData[i].IsRetrievable;
+
+      if (isRetrievable === true) {
+        propertiesName.push({ Name: name, DataType: dataType });
+      }
+    }
+
+    return propertiesName;
+  }
+
+  // Function to retrieve Folder ID by name
+  function RetrieveFolderID(folderName) {
+    try {
+      var filter = {
+        Property: "Name",
+        SimpleOperator: "equals",
+        Value: folderName
+      };
+
+      var folders = Folder.Retrieve(filter);
+
+      if (folders && folders.length > 0) {
+        return folders[0].ID;
+      } else {
+        throw new Error("Folder not found: " + folderName);
+      }
+    } catch (ex) {
+      throw new Error("RetrieveFolderID failed: " + ex.message);
+    }
+  }
+
+  // Function to create a Data Extension with given fields
+  function createDataExtension(dataExtensionName, folderName, fields) {
+    try {
+      var api = new Script.Util.WSProxy();
+      api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+
+      var folderID = RetrieveFolderID(folderName);
+
+      var config = {
+        "CustomerKey": dataExtensionName,
+        "Name": dataExtensionName,
+        "CategoryID": folderID, 
+        "Fields": fields
+      };
+
+      var result = api.createItem("DataExtension", config);
+      return Stringify(result);
+    } catch (ex) {
+      throw new Error("createDataExtension failed: " + ex.message);
+    }
+  }
+
+  // Function to define fields for the Data Extension based on the retrieveable properties
+  // Function to define fields for the Data Extension based on the retrieveable properties
+    // Function to define fields for the Data Extension based on the retrieveable properties
+    function DefineFieldsForDataExtension(cols) {
+    var fields = [];
+
+    for (var i = 0; i < cols.length; i++) {
+        var col = cols[i];
+
+        // Check if the field name contains a period (.)
+        if (col.Name.indexOf('.') === -1) {
+        // If no period in the name, define the field
+        var row = {
+            "CustomerKey": col.Name,
+            "Name": col.Name,
+            "FieldType": "Text",
+            "MaxLength": 200,
+            "IsPrimaryKey": false,
+            "IsRequired": false
+        };
+
+        fields.push(row);
+        } else {
+        // Optionally log the ignored field
+        //Write("Ignoring field with period in name: " + col.Name + "\n");
+        }
+    }
+
+    return fields;
+    }
+
+
+
+  // Function to determine field type based on the DataType
+  function GetFieldType(dataType) {
+    switch (dataType) {
+      case "String":
+        return "Text";
+      case "Int32":  
+        return "Number";
+      case "Boolean":
+        return "Boolean";
+      case "Decimal":
+      case "Double":
+        return "Decimal";
+      case "Date":
+        return "Date";
+      default:
+        return "Text"; // Default to Text if the type is unknown
+    }
+  }
+</script>
+                            `;
 }
 
 function generateAuditTrailAccessLogCode(){
