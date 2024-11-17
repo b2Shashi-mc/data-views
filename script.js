@@ -6,9 +6,9 @@ function onDataViewSelect(dataView) {
     try {
         if (dataView === "Sent") {
             code = generateSentCode();
-        }else if (dataView === "Job") {
+        } else if (dataView === "Job") {
             code = generateJobCode();
-        }  else if (dataView === "Open") {
+        } else if (dataView === "Open") {
             code = generateOpenCode();
         } else if (dataView === "Bounce") {
             code = generateBounceCode();
@@ -26,46 +26,52 @@ function onDataViewSelect(dataView) {
             code = generateBusinessUnitUnsubscribesCode();
         } else if (dataView === "NotSent") {
             code = generateNotSentCode();
-        }else if (dataView === "ImportDefinition") {
+        } else if (dataView === "ImportDefinition") {
             code = generateImportDefinitionCode();
-        }else if (dataView === "Journey") {
+        } else if (dataView === "Journey") {
             code = generateJourneyCode();
-        }else if (dataView === "JourneyActivity") {
+        } else if (dataView === "JourneyActivity") {
             code = generateJourneyActivityCode();
-        }else if (dataView === "AutomationActivityInstance") {
+        } else if (dataView === "AutomationActivityInstance") {
             code = generateAutomationActivityInstanceCode();
-        }else if (dataView === "AutomationInstance") {
+        } else if (dataView === "AutomationInstance") {
             code = generateAutomationInstanceCode();
-        }else if (dataView === "SMSMessageTracking") {
+        } else if (dataView === "SMSMessageTracking") {
             code = generateSMSMessageTrackingCode();
-        }else if (dataView === "SMSSubscriptionLog") {
+        } else if (dataView === "SMSSubscriptionLog") {
             code = generateSMSSubscriptionLogCode();
-        }else if (dataView === "UndeliverableSMS") {
+        } else if (dataView === "UndeliverableSMS") {
             code = generateUndeliverableSMSCode();
-        }else if (dataView === "MobileAddress") {
+        } else if (dataView === "MobileAddress") {
             code = generateMobileAddressCode();
-        }else if (dataView === "MobileSubscription") {
+        } else if (dataView === "MobileSubscription") {
             code = generateMobileSubscriptionCode();
-        }else if (dataView === "ChatMessagingSubscription") {
+        } else if (dataView === "ChatMessagingSubscription") {
             code = generateChatMessagingSubscriptionCode();
-        }else if (dataView === "MobilePush") {
+        } else if (dataView === "MobilePush") {
             code = generateMobilePushCode();
-        }else if (dataView === "MobileOrphanContact") {
+        } else if (dataView === "MobileOrphanContact") {
             code = generateMobileOrphanContactCode();
-        }else if (dataView === "ImportDefinitionResults") {
+        } else if (dataView === "ImportDefinitionResults") {
             code = generateImportDefinitionResultsCode();
-        }else if (dataView === "AuditTrailAcivityLog") {
+        } else if (dataView === "AuditTrailAcivityLog") {
             code = generateAuditTrailAcivityLogCode();
-        }else if (dataView === "AuditTrailAccessLog") {
+        } else if (dataView === "AuditTrailAccessLog") {
             code = generateAuditTrailAccessLogCode();
-        }else if (dataView === "Account") {
+        } else if (dataView === "Account") {
             code = generateAccountCode();
-        }else if (dataView === "AccountUser") {
+        } else if (dataView === "AccountUser") {
             code = generateAccountUserCode();
-        }else if (dataView === "BusinessUnit") {
+        } else if (dataView === "BusinessUnit") {
             code = generateBusinessUnitCode();
-        }else if (dataView === "GlobalUnsubscribeCategory") {
+        } else if (dataView === "GlobalUnsubscribeCategory") {
             code = generateGlobalUnsubscribeCategoryCode();
+        } else if (dataView === "BounceEvent") {
+            code = generateBounceEventCode();
+        } else if (dataView === "ClickEvent") {
+            code = generateClickEventCode();
+        }else if (dataView === "OpenEvent") {
+            code = generateOpenEventCode();
         }else {
             throw new Error("Invalid Data View selected");
         }
@@ -80,7 +86,508 @@ function onDataViewSelect(dataView) {
     }
 }
 
-function generateGlobalUnsubscribeCategoryCode(){
+
+function generateOpenEventCode(){
+    return `
+    <script runat="server">
+      Platform.Load("core", "1");
+    
+      try {
+        // Set the name of the SOAP object to "OpenEvent".
+        var soapObject = "OpenEvent";
+        // Define Data Extension and folder names
+        var dataExtensionName = soapObject;
+        var folderName = "APIObjects"; // Folder name
+    
+        // Describe the SOAP object and retrieve metadata
+        var describeResponse = DescribeSoapObject(soapObject);
+    
+        // Extract the properties array from the describeResponse
+        var properties = describeResponse.Results[0].Properties;
+    
+        // Fetch the retrieveable properties
+        var cols = FetchRetrieveableProperties(properties);
+    
+        // Define fields for the Data Extension
+        var fields = DefineFieldsForDataExtension(cols);
+    
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName, fields);
+    
+        // Output result to console
+        Write(result);
+      }
+      catch (ex) {
+        // Enhanced error handling with more details
+        Write("Error: " + ex.message);
+        Write("Error Description: " + ex.description );
+        Write("Stack Trace: " + ex.stack );
+    }
+    
+      // Function to describe SOAP object and retrieve metadata
+      function DescribeSoapObject(soapObjectname) {
+        try {
+          var api = new Script.Util.WSProxy();
+          var response = api.describe(soapObjectname);
+          if (response && response.Results && response.Results.length > 0) {
+            return response;
+          } else {
+            throw new Error("No metadata found for object: " + soapObjectname);
+          }
+        } catch (ex) {
+          throw new Error("DescribeSOAPObject failed: " + ex.message);
+        }
+      }
+    
+      // Function to fetch retrievable properties from SOAP metadata
+      function FetchRetrieveableProperties(soapMetaData) {
+        var propertiesName = [];
+    
+        for (var i in soapMetaData) {
+          var name = soapMetaData[i].Name;
+          var dataType = soapMetaData[i].DataType;
+          var isRetrievable = soapMetaData[i].IsRetrievable;
+    
+          if (isRetrievable === true) {
+            propertiesName.push({ Name: name, DataType: dataType });
+          }
+        }
+    
+        return propertiesName;
+      }
+    
+      // Function to retrieve Folder ID by name
+      function RetrieveFolderID(folderName) {
+        try {
+          var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+          };
+    
+          var folders = Folder.Retrieve(filter);
+    
+          if (folders && folders.length > 0) {
+            return folders[0].ID;
+          } else {
+            throw new Error("Folder not found: " + folderName);
+          }
+        } catch (ex) {
+          throw new Error("RetrieveFolderID failed: " + ex.message);
+        }
+      }
+    
+      // Function to create a Data Extension with given fields
+      function createDataExtension(dataExtensionName, folderName, fields) {
+        try {
+          var api = new Script.Util.WSProxy();
+          api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+    
+          var folderID = RetrieveFolderID(folderName);
+    
+          var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, 
+            "Fields": fields
+          };
+    
+          var result = api.createItem("DataExtension", config);
+          return Stringify(result);
+        } catch (ex) {
+          throw new Error("createDataExtension failed: " + ex.message);
+        }
+      }
+    
+      // Function to define fields for the Data Extension based on the retrieveable properties
+      // Function to define fields for the Data Extension based on the retrieveable properties
+        // Function to define fields for the Data Extension based on the retrieveable properties
+        function DefineFieldsForDataExtension(cols) {
+        var fields = [];
+    
+        for (var i = 0; i < cols.length; i++) {
+            var col = cols[i];
+    
+            // Check if the field name contains a period (.)
+            if (col.Name.indexOf('.') === -1) {
+            // If no period in the name, define the field
+            var row = {
+                "CustomerKey": col.Name,
+                "Name": col.Name,
+                "FieldType": "Text",
+                "MaxLength": 255,
+                "IsPrimaryKey": false,
+                "IsRequired": false
+            };
+    
+            fields.push(row);
+            } else {
+            // Optionally log the ignored field
+            //Write("Ignoring field with period in name: " + col.Name);
+            }
+        }
+    
+        return fields;
+        }
+    
+    
+    
+      // Function to determine field type based on the DataType
+      function GetFieldType(dataType) {
+        switch (dataType) {
+          case "String":
+            return "Text";
+          case "Int32":  
+            return "Number";
+          case "Boolean":
+            return "Boolean";
+          case "Decimal":
+          case "Double":
+            return "Decimal";
+          case "Date":
+            return "Date";
+          default:
+            return "Text"; // Default to Text if the type is unknown
+        }
+      }
+    </script>
+                                `;
+}
+
+function generateClickEventCode(){
+    return `
+    <script runat="server">
+      Platform.Load("core", "1");
+    
+      try {
+        // Set the name of the SOAP object to "BounceEvent".
+        var soapObject = "ClickEvent";
+        // Define Data Extension and folder names
+        var dataExtensionName = soapObject;
+        var folderName = "APIObjects"; // Folder name
+    
+        // Describe the SOAP object and retrieve metadata
+        var describeResponse = DescribeSoapObject(soapObject);
+    
+        // Extract the properties array from the describeResponse
+        var properties = describeResponse.Results[0].Properties;
+    
+        // Fetch the retrieveable properties
+        var cols = FetchRetrieveableProperties(properties);
+    
+        // Define fields for the Data Extension
+        var fields = DefineFieldsForDataExtension(cols);
+    
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName, fields);
+    
+        // Output result to console
+        Write(result);
+      }
+      catch (ex) {
+        // Enhanced error handling with more details
+        Write("Error: " + ex.message);
+        Write("Error Description: " + ex.description );
+        Write("Stack Trace: " + ex.stack );
+    }
+    
+      // Function to describe SOAP object and retrieve metadata
+      function DescribeSoapObject(soapObjectname) {
+        try {
+          var api = new Script.Util.WSProxy();
+          var response = api.describe(soapObjectname);
+          if (response && response.Results && response.Results.length > 0) {
+            return response;
+          } else {
+            throw new Error("No metadata found for object: " + soapObjectname);
+          }
+        } catch (ex) {
+          throw new Error("DescribeSOAPObject failed: " + ex.message);
+        }
+      }
+    
+      // Function to fetch retrievable properties from SOAP metadata
+      function FetchRetrieveableProperties(soapMetaData) {
+        var propertiesName = [];
+    
+        for (var i in soapMetaData) {
+          var name = soapMetaData[i].Name;
+          var dataType = soapMetaData[i].DataType;
+          var isRetrievable = soapMetaData[i].IsRetrievable;
+    
+          if (isRetrievable === true) {
+            propertiesName.push({ Name: name, DataType: dataType });
+          }
+        }
+    
+        return propertiesName;
+      }
+    
+      // Function to retrieve Folder ID by name
+      function RetrieveFolderID(folderName) {
+        try {
+          var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+          };
+    
+          var folders = Folder.Retrieve(filter);
+    
+          if (folders && folders.length > 0) {
+            return folders[0].ID;
+          } else {
+            throw new Error("Folder not found: " + folderName);
+          }
+        } catch (ex) {
+          throw new Error("RetrieveFolderID failed: " + ex.message);
+        }
+      }
+    
+      // Function to create a Data Extension with given fields
+      function createDataExtension(dataExtensionName, folderName, fields) {
+        try {
+          var api = new Script.Util.WSProxy();
+          api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+    
+          var folderID = RetrieveFolderID(folderName);
+    
+          var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, 
+            "Fields": fields
+          };
+    
+          var result = api.createItem("DataExtension", config);
+          return Stringify(result);
+        } catch (ex) {
+          throw new Error("createDataExtension failed: " + ex.message);
+        }
+      }
+    
+      // Function to define fields for the Data Extension based on the retrieveable properties
+      // Function to define fields for the Data Extension based on the retrieveable properties
+        // Function to define fields for the Data Extension based on the retrieveable properties
+        function DefineFieldsForDataExtension(cols) {
+        var fields = [];
+    
+        for (var i = 0; i < cols.length; i++) {
+            var col = cols[i];
+    
+            // Check if the field name contains a period (.)
+            if (col.Name.indexOf('.') === -1) {
+            // If no period in the name, define the field
+            var row = {
+                "CustomerKey": col.Name,
+                "Name": col.Name,
+                "FieldType": "Text",
+                "MaxLength": 255,
+                "IsPrimaryKey": false,
+                "IsRequired": false
+            };
+    
+            fields.push(row);
+            } else {
+            // Optionally log the ignored field
+            //Write("Ignoring field with period in name: " + col.Name);
+            }
+        }
+    
+        return fields;
+        }
+    
+    
+    
+      // Function to determine field type based on the DataType
+      function GetFieldType(dataType) {
+        switch (dataType) {
+          case "String":
+            return "Text";
+          case "Int32":  
+            return "Number";
+          case "Boolean":
+            return "Boolean";
+          case "Decimal":
+          case "Double":
+            return "Decimal";
+          case "Date":
+            return "Date";
+          default:
+            return "Text"; // Default to Text if the type is unknown
+        }
+      }
+    </script>
+                                `;
+}
+
+function generateBounceEventCode() {
+    return `
+    <script runat="server">
+      Platform.Load("core", "1");
+    
+      try {
+        // Set the name of the SOAP object to "BounceEvent".
+        var soapObject = "BounceEvent";
+        // Define Data Extension and folder names
+        var dataExtensionName = soapObject;
+        var folderName = "APIObjects"; // Folder name
+    
+        // Describe the SOAP object and retrieve metadata
+        var describeResponse = DescribeSoapObject(soapObject);
+    
+        // Extract the properties array from the describeResponse
+        var properties = describeResponse.Results[0].Properties;
+    
+        // Fetch the retrieveable properties
+        var cols = FetchRetrieveableProperties(properties);
+    
+        // Define fields for the Data Extension
+        var fields = DefineFieldsForDataExtension(cols);
+    
+        // Create Data Extension and retrieve result
+        var result = createDataExtension(dataExtensionName, folderName, fields);
+    
+        // Output result to console
+        Write(result);
+      }
+      catch (ex) {
+        // Enhanced error handling with more details
+        Write("Error: " + ex.message);
+        Write("Error Description: " + ex.description );
+        Write("Stack Trace: " + ex.stack );
+    }
+    
+      // Function to describe SOAP object and retrieve metadata
+      function DescribeSoapObject(soapObjectname) {
+        try {
+          var api = new Script.Util.WSProxy();
+          var response = api.describe(soapObjectname);
+          if (response && response.Results && response.Results.length > 0) {
+            return response;
+          } else {
+            throw new Error("No metadata found for object: " + soapObjectname);
+          }
+        } catch (ex) {
+          throw new Error("DescribeSOAPObject failed: " + ex.message);
+        }
+      }
+    
+      // Function to fetch retrievable properties from SOAP metadata
+      function FetchRetrieveableProperties(soapMetaData) {
+        var propertiesName = [];
+    
+        for (var i in soapMetaData) {
+          var name = soapMetaData[i].Name;
+          var dataType = soapMetaData[i].DataType;
+          var isRetrievable = soapMetaData[i].IsRetrievable;
+    
+          if (isRetrievable === true) {
+            propertiesName.push({ Name: name, DataType: dataType });
+          }
+        }
+    
+        return propertiesName;
+      }
+    
+      // Function to retrieve Folder ID by name
+      function RetrieveFolderID(folderName) {
+        try {
+          var filter = {
+            Property: "Name",
+            SimpleOperator: "equals",
+            Value: folderName
+          };
+    
+          var folders = Folder.Retrieve(filter);
+    
+          if (folders && folders.length > 0) {
+            return folders[0].ID;
+          } else {
+            throw new Error("Folder not found: " + folderName);
+          }
+        } catch (ex) {
+          throw new Error("RetrieveFolderID failed: " + ex.message);
+        }
+      }
+    
+      // Function to create a Data Extension with given fields
+      function createDataExtension(dataExtensionName, folderName, fields) {
+        try {
+          var api = new Script.Util.WSProxy();
+          api.setClientId({ "ID": Platform.Function.AuthenticatedMemberID() });
+    
+          var folderID = RetrieveFolderID(folderName);
+    
+          var config = {
+            "CustomerKey": dataExtensionName,
+            "Name": dataExtensionName,
+            "CategoryID": folderID, 
+            "Fields": fields
+          };
+    
+          var result = api.createItem("DataExtension", config);
+          return Stringify(result);
+        } catch (ex) {
+          throw new Error("createDataExtension failed: " + ex.message);
+        }
+      }
+    
+      // Function to define fields for the Data Extension based on the retrieveable properties
+      // Function to define fields for the Data Extension based on the retrieveable properties
+        // Function to define fields for the Data Extension based on the retrieveable properties
+        function DefineFieldsForDataExtension(cols) {
+        var fields = [];
+    
+        for (var i = 0; i < cols.length; i++) {
+            var col = cols[i];
+    
+            // Check if the field name contains a period (.)
+            if (col.Name.indexOf('.') === -1) {
+            // If no period in the name, define the field
+            var row = {
+                "CustomerKey": col.Name,
+                "Name": col.Name,
+                "FieldType": "Text",
+                "MaxLength": 255,
+                "IsPrimaryKey": false,
+                "IsRequired": false
+            };
+    
+            fields.push(row);
+            } else {
+            // Optionally log the ignored field
+            //Write("Ignoring field with period in name: " + col.Name);
+            }
+        }
+    
+        return fields;
+        }
+    
+    
+    
+      // Function to determine field type based on the DataType
+      function GetFieldType(dataType) {
+        switch (dataType) {
+          case "String":
+            return "Text";
+          case "Int32":  
+            return "Number";
+          case "Boolean":
+            return "Boolean";
+          case "Decimal":
+          case "Double":
+            return "Decimal";
+          case "Date":
+            return "Date";
+          default:
+            return "Text"; // Default to Text if the type is unknown
+        }
+      }
+    </script>
+                                `;
+}
+function generateGlobalUnsubscribeCategoryCode() {
     return `
     <script runat="server">
       Platform.Load("core", "1");
@@ -216,7 +723,7 @@ function generateGlobalUnsubscribeCategoryCode(){
             fields.push(row);
             } else {
             // Optionally log the ignored field
-            //Write("Ignoring field with period in name: " + col.Name );
+            //Write("Ignoring field with period in name: " + col.Name);
             }
         }
     
@@ -247,7 +754,7 @@ function generateGlobalUnsubscribeCategoryCode(){
                                 `;
 }
 
-function generateBusinessUnitCode(){
+function generateBusinessUnitCode() {
     return `
     <script runat="server">
       Platform.Load("core", "1");
@@ -414,7 +921,7 @@ function generateBusinessUnitCode(){
                                 `;
 }
 
-function generateAccountUserCode(){
+function generateAccountUserCode() {
     return `
     <script runat="server">
       Platform.Load("core", "1");
@@ -581,7 +1088,7 @@ function generateAccountUserCode(){
                                 `;
 }
 
-function generateAccountCode(){
+function generateAccountCode() {
     return `
 <script runat="server">
   Platform.Load("core", "1");
@@ -748,7 +1255,7 @@ function generateAccountCode(){
                             `;
 }
 
-function generateAuditTrailAccessLogCode(){
+function generateAuditTrailAccessLogCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -833,7 +1340,7 @@ function generateAuditTrailAccessLogCode(){
                         `;
 }
 
-function generateAuditTrailAcivityLogCode(){
+function generateAuditTrailAcivityLogCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -921,7 +1428,7 @@ function generateAuditTrailAcivityLogCode(){
                         `;
 }
 
-function generateImportDefinitionResultsCode(){
+function generateImportDefinitionResultsCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -1012,7 +1519,7 @@ function generateImportDefinitionResultsCode(){
                         `;
 }
 
-function generateMobileOrphanContactCode(){
+function generateMobileOrphanContactCode() {
     return `
 <script runat="server">
     Platform.Load("core", "1");
@@ -1080,7 +1587,7 @@ function generateMobileOrphanContactCode(){
                         `;
 }
 
-function generateMobilePushCode(){
+function generateMobilePushCode() {
     return `
 <script runat="server">
     Platform.Load("core", "1");
@@ -1178,7 +1685,7 @@ function generateMobilePushCode(){
                     `;
 }
 
-function generateChatMessagingSubscriptionCode(){
+function generateChatMessagingSubscriptionCode() {
     return `
 <script runat="server">
     Platform.Load("core", "1");
@@ -1252,10 +1759,10 @@ function generateChatMessagingSubscriptionCode(){
         return Stringify(result);
     }
 </script>
-                `;  
+                `;
 }
 
-function generateMobileSubscriptionCode(){
+function generateMobileSubscriptionCode() {
     return `
 <script runat="server">
     Platform.Load("core", "1");
@@ -1330,10 +1837,10 @@ function generateMobileSubscriptionCode(){
 </script>
 
 
-                `; 
+                `;
 }
 
-function generateMobileAddressCode(){
+function generateMobileAddressCode() {
     return `
     <script runat="server">
     Platform.Load("core", "1");
@@ -1413,10 +1920,10 @@ function generateMobileAddressCode(){
     }
 </script>
 
-                `; 
+                `;
 }
 
-function generateUndeliverableSMSCode(){
+function generateUndeliverableSMSCode() {
     return `
 <script runat="server">
     Platform.Load("core", "1");
@@ -1481,10 +1988,10 @@ function generateUndeliverableSMSCode(){
     }
 </script>
 
-            `; 
+            `;
 }
 
-function generateSMSSubscriptionLogCode(){
+function generateSMSSubscriptionLogCode() {
     return `
 <script runat="server">
     Platform.Load("core", "1");
@@ -1558,10 +2065,10 @@ function generateSMSSubscriptionLogCode(){
     }
 </script>
 
-            `; 
+            `;
 }
 
-function generateSMSMessageTrackingCode(){
+function generateSMSMessageTrackingCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -1644,10 +2151,10 @@ function generateSMSMessageTrackingCode(){
     }
 </script>
 
-        `; 
+        `;
 }
 
-function generateAutomationActivityInstanceCode(){
+function generateAutomationActivityInstanceCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -1730,10 +2237,10 @@ function generateAutomationActivityInstanceCode(){
     }
 </script>
 
-    `; 
+    `;
 }
 
-function generateAutomationInstanceCode(){
+function generateAutomationInstanceCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -1819,11 +2326,11 @@ function generateAutomationInstanceCode(){
     }
 </script>
 
-    `; 
-    
+    `;
+
 }
 
-function generateJourneyActivityCode(){
+function generateJourneyActivityCode() {
     return `
     <script runat="server">
     // Load necessary libraries
@@ -1898,9 +2405,9 @@ function generateJourneyActivityCode(){
     }
 </script>
 
-    `; 
+    `;
 }
-function generateJourneyCode(){
+function generateJourneyCode() {
     return `
     <script runat="server">
     // Load necessary libraries
@@ -1977,9 +2484,9 @@ function generateJourneyCode(){
     }
 </script>
 
-    `; 
+    `;
 }
-function generateImportDefinitionCode(){
+function generateImportDefinitionCode() {
     return `
    <script runat="server">
     // Load necessary libraries
@@ -2093,7 +2600,7 @@ function generateImportDefinitionCode(){
     `;
 }
 
-function generateNotSentCode(){
+function generateNotSentCode() {
     return `
 <script runat="server">
     // Load necessary libraries
@@ -3078,7 +3585,7 @@ function copyCode() {
     navigator.clipboard.writeText(codeText)
         .then(() => {
             const modal = document.getElementById("copyModal");
-            
+
             // Show the modal and then fade it out
             modal.classList.add("show");
 
