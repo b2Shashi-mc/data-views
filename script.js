@@ -890,7 +890,7 @@ function generateBusinessUnitCode() {
             fields.push(row);
             } else {
             // Optionally log the ignored field
-            //Write("Ignoring field with period in name: " + col.Name + "\n");
+            //Write("Ignoring field with period in name: " + col.Name);
             }
         }
     
@@ -1057,7 +1057,7 @@ function generateAccountUserCode() {
             fields.push(row);
             } else {
             // Optionally log the ignored field
-            //Write("Ignoring field with period in name: " + col.Name + "\n");
+            //Write("Ignoring field with period in name: " + col.Name);
             }
         }
     
@@ -1224,7 +1224,7 @@ function generateAccountCode() {
         fields.push(row);
         } else {
         // Optionally log the ignored field
-        //Write("Ignoring field with period in name: " + col.Name + "\n");
+        //Write("Ignoring field with period in name: " + col.Name);
         }
     }
 
