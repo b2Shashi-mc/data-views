@@ -1667,7 +1667,7 @@ function generateMobilePushCode() {
                 { "CustomerKey": "IsHonorDST", "Name": "IsHonorDST", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
                 { "CustomerKey": "SystemToken", "Name": "SystemToken", "FieldType": "Text", "MaxLength": 4000, "IsPrimaryKey": false, "IsRequired": false },
                 { "CustomerKey": "ProviderToken", "Name": "ProviderToken", "FieldType": "Text", "MaxLength": 200, "IsPrimaryKey": false, "IsRequired": false },
-                { "CustomerKey": "Badge", "Name": "Badge", "FieldType": "Number", "Precision": 18, "Scale": 0, "IsPrimaryKey": false, "IsRequired": false },
+                { "CustomerKey": "Badge", "Name": "Badge", "FieldType": "Decimal", "Precision": 18, "Scale": 0, "IsPrimaryKey": false, "IsRequired": false },
                 { "CustomerKey": "LocationEnabled", "Name": "LocationEnabled", "FieldType": "Boolean", "IsPrimaryKey": false, "IsRequired": false },
                 { "CustomerKey": "TimeZone", "Name": "TimeZone", "FieldType": "Text", "MaxLength": 50, "IsPrimaryKey": false, "IsRequired": false },
                 { "CustomerKey": "Device", "Name": "Device", "FieldType": "Text", "MaxLength": 100, "IsPrimaryKey": false, "IsRequired": false },
