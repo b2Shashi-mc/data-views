@@ -1323,8 +1323,8 @@ function generateAuditTrailAccessLogCode() {
                 {"CustomerKey":"SecurityEventType","Name":"SecurityEventType","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"LoginStatusID","Name":"LoginStatusID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"LoginStatusName","Name":"LoginStatusName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
-                {"CustomerKey":"UserAgent","Name":"UserAgent","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
-                {"CustomerKey":"Event Source","Name":"Event Source","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"UserAgent","Name":"UserAgent","FieldType":"Text","MaxLength":250,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"Event Source","Name":"Event Source","FieldType":"Text","MaxLength":250,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"InsertedDate","Name":"InsertedDate","FieldType":"Date","IsPrimaryKey":false,"IsRequired":false,"DefaultValue":"getdate()"}
             ]
         };
@@ -1407,11 +1407,11 @@ function generateAuditTrailAcivityLogCode() {
                 {"CustomerKey":"EmployeeID","Name":"EmployeeID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"EmployeeName","Name":"EmployeeName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"ObjectTypeID","Name":"ObjectTypeID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
-                {"CustomerKey":"ObjectTypeName","Name":"ObjectTypeName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"ObjectTypeName","Name":"ObjectTypeName","FieldType":"Text","MaxLength":200,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"OperationID","Name":"OperationID","FieldType":"Number","IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"OperationName","Name":"OperationName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"ObjectID","Name":"ObjectID","FieldType":"Text","MaxLength":36,"IsPrimaryKey":false,"IsRequired":false},
-                {"CustomerKey":"ObjectName","Name":"ObjectName","FieldType":"Text","MaxLength":100,"IsPrimaryKey":false,"IsRequired":false},
+                {"CustomerKey":"ObjectName","Name":"ObjectName","FieldType":"Text","MaxLength":250,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"TransactionID","Name":"TransactionID","FieldType":"Text","MaxLength":36,"IsPrimaryKey":false,"IsRequired":false},
                 {"CustomerKey":"InsertedDate","Name":"InsertedDate","FieldType":"Date","IsPrimaryKey":false,"IsRequired":false,"DefaultValue":"getdate()"}
             ]
