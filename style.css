@@ -57,7 +57,7 @@ header {
     color: var(--primary-text);
     text-align: left;
     padding: 10px 20px;
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller font size */
     font-weight: 200;
     letter-spacing: 1px;
 }
@@ -72,7 +72,7 @@ header {
 }
 
 .data-view-list h2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem; /* Smaller font size */
     font-weight: 600;
     color: var(--secondary-text);
     margin-bottom: 15px;
@@ -87,7 +87,7 @@ header {
     cursor: pointer;
     background-color: #2d3c42;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    font-size: 1.1rem;
+    font-size: 1rem; /* Smaller font size */
     color: var(--secondary-text);
 }
 
@@ -120,7 +120,7 @@ header {
 }
 
 .code-editor-container h2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem; /* Smaller font size */
     color: var(--highlight-color);
     margin-bottom: 20px;
     font-weight: 600;
@@ -133,7 +133,7 @@ header {
     border-radius: 8px;
     padding: 12px 20px;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1rem; /* Smaller font size */
     transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     position: absolute;
     top: 20px;
@@ -159,7 +159,7 @@ pre {
     background-color: var(--code-bg);
     border-radius: 10px;
     border: 1px solid #444;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Smaller font size */
     font-family: 'Source Code Pro', monospace;
     color: #f8f8f2;
 }
@@ -201,7 +201,7 @@ pre::-webkit-scrollbar-track {
         background-color: var(--gradient-start);
         color: #fff;
         text-decoration: none;
-        font-size: 1.2rem;
+        font-size: 1rem; /* Smaller font size */
         border-radius: 8px;
         text-align: center;
         transition: background-color 0.3s ease, transform 0.3s ease;
@@ -257,7 +257,7 @@ pre::-webkit-scrollbar-track {
     background-color: var(--primary-color);
     color: var(--text-color);
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 1rem; /* Smaller font size */
     border-radius: 8px;
     text-align: center;
     margin-bottom: 30px;
